@@ -7,15 +7,15 @@
         mc:Ignorable="d"
         KeyDown="Board_KeyDown"
         Icon="/Img/jigsaw_Gfe_icon.ico"
-        Title="8 Puzzle" Height="450" Width="800">
+        Title="8 Puzzle" Height="511.519" Width="800" WindowStartupLocation="CenterScreen">
 
     <DockPanel LastChildFill="True">
         <ToolBarTray DockPanel.Dock="Top">
             <ToolBar >
                 <Button Name="newButton" Click="NewButton_Click" >
                     <StackPanel Orientation="Horizontal">
-                        <Image Source="/Img/new.png" Width="25" Height="25" />
-                        <TextBlock Text=" New" FontSize="18" FontWeight="DemiBold"/>
+                        <Image Source="/Img/add.png" Width="25" Height="25" Margin="0 0 5 0" />
+                        <TextBlock Text=" New" FontSize="18"/>
                     </StackPanel>
                 </Button>
             </ToolBar>
@@ -24,8 +24,8 @@
             <ToolBar>
                 <Button Name="saveButton" Click="SaveButton_Click" >
                     <StackPanel Orientation="Horizontal">
-                        <Image Source="/Img/save.png" Width="25" Height="25" />
-                        <TextBlock Text=" Save" FontSize="18" FontWeight="DemiBold"/>
+                        <Image Source="/Img/floppy-disk.png" Width="25" Height="25" Margin="0 0 5 0"/>
+                        <TextBlock Text=" Save" FontSize="18"/>
                     </StackPanel>
                 </Button>
             </ToolBar>
@@ -33,8 +33,8 @@
             <ToolBar>
                 <Button Name="helpButton" >
                     <StackPanel Orientation="Horizontal">
-                        <Image Source="/Img/help.png" Width="25" Height="25" />
-                        <TextBlock Text=" Help" FontSize="18" FontWeight="DemiBold"/>
+                        <Image Source="/Img/question.png" Width="25" Height="25" Margin="0 0 5 0" />
+                        <TextBlock Text=" Help" FontSize="18"/>
                     </StackPanel>
                 </Button>
             </ToolBar>
@@ -42,32 +42,32 @@
 
         <Grid Name="boar">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="52*"/>
+                <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="400"/>
             </Grid.ColumnDefinitions>
             <Canvas Name="Choi" 
                     Grid.Column="0"
                     Grid.ColumnSpan="3"
                     MouseLeftButtonDown="Window_MouseLeftButtonDown"
-         MouseLeftButtonUp="Window_MouseLeftButtonUp"
-         MouseMove="Window_MouseMove">
+                    MouseLeftButtonUp="Window_MouseLeftButtonUp"
+                    MouseMove="Window_MouseMove">
 
-                <Button Name="topButton" Height="40" Width="40" Canvas.Left="162" Canvas.Top="243" Click="TopButton_Click">
+                <Button Name="topButton" Height="40" Width="40" Canvas.Left="295" Canvas.Top="315" Click="TopButton_Click"  Background="Transparent" BorderThickness="0">
                     <Image Source="/Img/top.png" Width="20" Height="20" RenderTransformOrigin="3.82,3.38"/>
 
                 </Button>
 
-                <Button Name="buttomButton" Height="40" Width="40" Canvas.Left="162" Canvas.Top="326" Click="ButtomButton_Click">
+                <Button Name="buttomButton" Height="40" Width="40" Canvas.Left="295" Canvas.Top="395" Click="ButtomButton_Click" Background="Transparent" BorderThickness="0">
                     <Image Source="/Img/buttom.png" Width="20" Height="20" RenderTransformOrigin="3.82,3.38"/>
 
                 </Button>
 
-                <Button Name="leftButton" Height="40" Width="40" Canvas.Left="120" Canvas.Top="285" Click="LeftButton_Click">
+                <Button Name="leftButton" Height="40" Width="40" Canvas.Left="255" Canvas.Top="355" Click="LeftButton_Click"  Background="Transparent" BorderThickness="0">
                     <Image Source="/Img/left.png" Width="20" Height="20" RenderTransformOrigin="3.82,3.38"/>
 
                 </Button>
 
-                <Button Name="rightButton" Height="40" Width="40" Canvas.Left="202" Canvas.Top="285 " Click="RightButton_Click">
+                <Button Name="rightButton" Height="40" Width="40" Canvas.Left="335" Canvas.Top="355" Click="RightButton_Click"  Background="Transparent" BorderThickness="0">
                     <Image Source="/Img/right.png" Width="20" Height="20" RenderTransformOrigin="3.82,3.38"/>
 
                 </Button>
@@ -81,6 +81,5 @@
                 </Canvas>
             </StackPanel>
         </Grid>
-
     </DockPanel>
 </Window>

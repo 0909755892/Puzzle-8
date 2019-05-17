@@ -35,7 +35,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>jigsaw_Gfe_icon.ico</ApplicationIcon>
+    <ApplicationIcon>Img\jigsaw_Gfe_icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -100,25 +100,16 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Img\new.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Img\save.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Img\help.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Img\jigsaw_Gfe_icon.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="jigsaw_Gfe_icon.ico" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Img\buttom.png" />
     <Resource Include="Img\left.png" />
     <Resource Include="Img\right.png" />
     <Resource Include="Img\top.png" />
+    <Resource Include="Img\add.png" />
+    <Resource Include="Img\floppy-disk.png" />
+    <Resource Include="Img\question.png" />
     <Content Include="Save.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
