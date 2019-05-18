@@ -34,6 +34,20 @@ namespace _1760190_1760221_1760222_MiniProject_8_Puzzle
        
         List<int> list_2chieu = new List<int>();
         int docao = 0;
+        Image[,] _images = new Image[3, 3];
+        int commonindex = 8;
+
+        List<Image> _listImg = new List<Image>(9);
+
+        // create steps
+        const int MoveUp = 1;
+        const int MoveDown = -1;
+        const int MoveRight = -3;
+        const int MoveLeft = 3;
+
+        // create continue game
+        bool IsContinueGame = true;
+
         private void NewButton_Click(object sender, RoutedEventArgs e)
         {
             DispatcherTimer _timer;
@@ -54,7 +68,6 @@ namespace _1760190_1760221_1760222_MiniProject_8_Puzzle
 
 
                 var newHeight = 100 * height / width;
-                var images1 = new List<Image>();
                 for (int i = 0; i < 3; i++)
                 {
                     for (int j = 0; j < 3; j++)
@@ -67,19 +80,16 @@ namespace _1760190_1760221_1760222_MiniProject_8_Puzzle
                             Source = cropped,
                             Width = 100,
                             Height = newHeight,
-                            Tag = new Tuple<int, int, int>(i, j, 0)
+                            Tag = new Tuple<int, int, int>(i, j, i*3 + j)
                         };
                         
-
-
                         images.Add(img);
-                        images1.Add(img);
                     }
                 }
 
                 var indices = new List<int> { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
                 var rng = new Random();
-               
+
                 for (int i = 0; i < 3; i++)
                 {
                     for (int j = 0; j < 3; j++)
@@ -87,21 +97,27 @@ namespace _1760190_1760221_1760222_MiniProject_8_Puzzle
                         if (!(i == 2 && j == 2))
                         {
                             int index = rng.Next(indices.Count);
-                            int index2 = indices[index];
                             var img = images[indices[index]];
-                            Choi.Children.Add(img);
 
-                            var tag = img.Tag as Tuple<int, int, int>;
-                            img.Tag = new Tuple<int, int, int>
-                                (tag.Item1, tag.Item2, j * 3 + i);
+
+                            Choi.Children.Add(img);
+                            
 
                             Canvas.SetLeft(img, i * (100 + 5)+30);
                             Canvas.SetTop(img, j * (newHeight + 5)+30);
 
+                            _listImg.Add(img);
 
                             docao = newHeight;
-                            list_2chieu.Add(index2);
 
+                            indices.RemoveAt(index);
+                        }
+                        else
+                        {
+                            int index = rng.Next(indices.Count);
+                            var img = images[indices[index]];
+
+                            _listImg.Add(img);
                             indices.RemoveAt(index);
                         }
                     }
@@ -124,91 +140,142 @@ namespace _1760190_1760221_1760222_MiniProject_8_Puzzle
 
 
         Point _lastPos;
+        int _selectedIndex = -1;
+        int _swapIndex = -1;
+        double GetTop_selectedIndex;
+        double GetLeft_selectedIndex;
     
-        bool _isDragging = false;
-        int move = -1;
-        Image[,] _images = new Image[3, 3];
-
+        bool _isDragging = false;  
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             _lastPos = e.GetPosition(this);
 
-            //var left = Canvas.GetLeft(images[0]);
-            //var top = Canvas.GetTop(images[0]);
+            for (int i = 0; i < _listImg.Count; i++)
+            {
+                // Get all bound of image
+                var TopBound = Canvas.GetTop(_listImg[i]);
+                var LeftBound = Canvas.GetLeft(_listImg[i]);
+                var BottomBound = Canvas.GetTop(_listImg[i]) + _listImg[i].Height;
+                var RightBound = Canvas.GetLeft(_listImg[i]) + _listImg[i].Width;
+
+                //Get position image
+                if ((_lastPos.X >= LeftBound && _lastPos.X <= RightBound) && (_lastPos.Y >= TopBound && _lastPos.Y <= BottomBound))
+                {
+                    _selectedIndex = i;
+                }
+            }
             
-            //MessageBox.Show(left.ToString());
-            //MessageBox.Show(top.ToString());
-
-
-
-            //for (int k = 0; k < images.Count; k++)
-            //{
-
-
-            //    var left = Canvas.GetLeft(images[k]);
-            //    var top = Canvas.GetTop(images[k]);
-            //    MessageBox.Show(left.ToString());
-            //    if ((Left <= _lastPos.X && _lastPos.X <= Left + images[k].Width) &&
-            //        (top <= _lastPos.Y && _lastPos.Y <= top + images[k].Height))
-            //    {
-            //        move = k;
-            //        MessageBox.Show("ok");
-            //    }
-            //}
+            // Checking _selectedIndex if _selectedIndex != -1 have to right active Mouse_Move
+            if(_selectedIndex != -1)
+            {
+                _isDragging = true;
+                GetTop_selectedIndex = Canvas.GetTop(_listImg[_selectedIndex]);
+                GetLeft_selectedIndex = Canvas.GetLeft(_listImg[_selectedIndex]);
+            }
         }
 
         private void Window_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            //_isDragging = false;
+            _isDragging = false;
 
-            //var curPos = e.GetPosition(this);
-            //var x = ((int)curPos.X) / 40 * 40;
-            //var y = ((int)curPos.Y) / 40 * 40;
-            //Canvas.SetLeft(_images[_lastI, _lastJ], x);
-            //Canvas.SetTop(_images[_lastI, _lastJ], y);
+            var curPos = e.GetPosition(this);
 
+            for(int i = 0; i < _listImg.Count;i++)
+            {
+                // Get all bound of image swap
+                var TopBound = Canvas.GetTop(_listImg[i]);
+                var LeftBound = Canvas.GetLeft(_listImg[i]);
+                var BottomBound = Canvas.GetTop(_listImg[i]) + _listImg[i].Height;
+                var RightBound = Canvas.GetLeft(_listImg[i]) + _listImg[i].Width;
+
+                //Get position image swap
+                if ((curPos.X >= LeftBound && curPos.X <= RightBound) && (curPos.Y >= TopBound && curPos.Y <= BottomBound) && i != commonindex)
+                {
+                    _swapIndex = i;
+                }
+            }
+
+            if (_swapIndex == _selectedIndex)
+            {
+                _swapIndex = commonindex;
+            }
+
+            Canvas.SetTop(_listImg[_selectedIndex], GetTop_selectedIndex);
+            Canvas.SetLeft(_listImg[_selectedIndex], GetLeft_selectedIndex);
+
+            // Check swap two images
+            if (_swapIndex == commonindex && _selectedIndex == _swapIndex + MoveDown )
+            {
+                sendKey(Key.Down);
+
+                GetTop_selectedIndex = Canvas.GetTop(_listImg[_selectedIndex]);
+                GetLeft_selectedIndex = Canvas.GetLeft(_listImg[_selectedIndex]);
+
+                if (CheckWin())
+                {
+                    MessageBox.Show("You Win!");
+                    IsContinueGame = false;
+                }
+            }
+            else if(_swapIndex == commonindex && _selectedIndex == _swapIndex + MoveUp )
+            {
+                sendKey(Key.Up);
+
+                GetTop_selectedIndex = Canvas.GetTop(_listImg[_selectedIndex]);
+                GetLeft_selectedIndex = Canvas.GetLeft(_listImg[_selectedIndex]);
+
+                if (CheckWin())
+                {
+                    MessageBox.Show("You Win!");
+                    IsContinueGame = false;
+                }
+            }
+            else if(_swapIndex == commonindex && _selectedIndex == _swapIndex + MoveRight)
+            {
+                sendKey(Key.Right);
+                if (CheckWin())
+                {
+                    MessageBox.Show("You Win!");
+                    IsContinueGame = false;
+                }
+            }
+            else if(_swapIndex == commonindex && _selectedIndex == _swapIndex + MoveLeft)
+            {
+                sendKey(Key.Left);
+
+                GetTop_selectedIndex = Canvas.GetTop(_listImg[_selectedIndex]);
+                GetLeft_selectedIndex = Canvas.GetLeft(_listImg[_selectedIndex]);
+
+                if (CheckWin())
+                {
+                    MessageBox.Show("You Win!");
+                    IsContinueGame = false;
+                }
+            }
+            else
+            {
+                Canvas.SetTop(_listImg[_selectedIndex], GetTop_selectedIndex);
+                Canvas.SetLeft(_listImg[_selectedIndex], GetLeft_selectedIndex);
+            }
         }
 
         private void Window_MouseMove(object sender, MouseEventArgs e)
         {
-            
             if (_isDragging)
             {
                 var curPos = e.GetPosition(this);
 
-                var dx = curPos.X - _lastPos.X;
-                var dy = curPos.Y - _lastPos.Y;
+                var dx = curPos.X - _lastPos.X + GetLeft_selectedIndex;
+                var dy = curPos.Y - _lastPos.Y + GetTop_selectedIndex;
 
-                var imgg = images[move];
-
-                var oldLeft = Canvas.GetLeft(imgg);
-                var oldTop = Canvas.GetTop(imgg);
-
-                Canvas.SetLeft(imgg, oldLeft + dx);
-                Canvas.SetTop(imgg, oldTop + dy);
-
-
-
-                _lastPos = curPos;
+                Canvas.SetLeft(_listImg[_selectedIndex], dx);    
+                Canvas.SetTop(_listImg[_selectedIndex], dy);
             }
-
-         }
-
-
-
-
-
-
-
-
-
+        }
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-
-
-
             var writer = new StreamWriter("Save.txt");
             writer.WriteLine(filename);
             
@@ -222,30 +289,26 @@ namespace _1760190_1760221_1760222_MiniProject_8_Puzzle
 
         private void TopButton_Click(object sender, RoutedEventArgs e)
         {
-
-
-            sendKey(Key.Up);
-
-
+            if(IsContinueGame)
+                sendKey(Key.Up);
         }
 
         private void ButtomButton_Click(object sender, RoutedEventArgs e)
         {
-
-            sendKey(Key.Down);
-       
-
+            if (IsContinueGame)
+                sendKey(Key.Down);
         }
        
-
         private void LeftButton_Click(object sender, RoutedEventArgs e)
         {
-            sendKey(Key.Left);
+            if (IsContinueGame)
+                sendKey(Key.Left);
         }
 
         private void RightButton_Click(object sender, RoutedEventArgs e)
         {
-            sendKey(Key.Right);
+            if (IsContinueGame)
+                sendKey(Key.Right);
         }
 
         private void sendKey(Key key)
@@ -254,70 +317,86 @@ namespace _1760190_1760221_1760222_MiniProject_8_Puzzle
             InputManager.Current.ProcessInput(e1);
         }
 
-        private void SwichImg(int vitri)
+        private void SwichImg(int location)
         {
+            // GetTop and GetLeft
+            var GetTop = Canvas.GetTop(_listImg[commonindex + location]);
+            var GetLeft = Canvas.GetLeft(_listImg[commonindex + location]);
 
-            var imgg = images[vitri];
-            
-            var oldLeft = Canvas.GetLeft(imgg);
-            var oldTop = Canvas.GetTop(imgg);
+            // Set location 
+            if (location == -1)
+                Canvas.SetTop(_listImg[commonindex + location], GetTop + _listImg[commonindex + location].Height + 5);
+            else if (location == -3)
+                Canvas.SetLeft(_listImg[commonindex + location], GetLeft + _listImg[commonindex + location].Width + 5);
+            else if (location == 3)
+                Canvas.SetLeft(_listImg[commonindex + location], GetLeft - _listImg[commonindex + location].Width - 5);
+            else
+                Canvas.SetTop(_listImg[commonindex + location], GetTop - _listImg[commonindex + location].Height - 5);
 
+            //Swap two images
+            var temp_img = new Image();
+            temp_img = _listImg[commonindex];
+            _listImg[commonindex] = _listImg[commonindex + location];
+            _listImg[commonindex + location] = temp_img;
 
-
-
-            Canvas.SetLeft(imgg, oldLeft +10);
-            //Canvas.SetTop(imgg, oldTop+(docao+35));
-
-            
-
+            // update location control
+            commonindex += location;
         }
-        int index;
+        
         private void Board_KeyDown(object sender, KeyEventArgs e)
         {
             switch (e.Key.ToString())
             {
                 case "Down":
                     {
-                        int temp = index;
-                        index = index - 3 >= 0 ? index - 3 : index;
-                        //MessageBox.Show("Toi La Down");
-                        SwichImg(temp);
-                    }
-                    break;
+                        if (commonindex + MoveDown >= 0 && commonindex + MoveDown <= 8 && commonindex != 6 && commonindex != 3 && commonindex !=0)
+                            SwichImg(MoveDown);
+                    } break;
                 case "Up":
                     {
-                        //MessageBox.Show("Toi La Up");
-
-                        int temp = index;
-                        index = index + 3 < 9 ? index + 3 : index;
-                        SwichImg(temp);
-                    }
-                    break;
+                        if (commonindex + MoveUp >= 0 && commonindex + MoveUp <= 8 && commonindex != 2 && commonindex != 5 && commonindex != 8)
+                            SwichImg(MoveUp);
+                    } break;
                 case "Left":
                     {
-                        //MessageBox.Show("Toi La Left");
-                        if (index == 8 || index == 5 || index == 2)
-                            break;
-
-                        int temp = index;
-
-                        SwichImg(temp);
-                    }
-                    break;
+                        if (commonindex + MoveLeft >= 0 && commonindex + MoveLeft <= 8)
+                            SwichImg(MoveLeft);
+                    } break;
                 case "Right":
                     {
-                        if (index == 0 || index == 3 || index == 6)
-                            break;
-
-                        int temp = index;
-                        index = index - 1 < 9 ? index - 1 : index;
-                        //MessageBox.Show("Toi La Right");
-
-
-                        SwichImg(temp);
-                    }
-                    break;
+                        if (commonindex + MoveRight >= 0 && commonindex + MoveRight <= 8)
+                            SwichImg(MoveRight);
+                    } break;
             }
+            if (CheckWin())
+            {
+                MessageBox.Show("You Win!");
+                IsContinueGame = false;
+            }
+        }
+
+        int CheckWin_game = 0;
+
+        private bool CheckWin()
+        {
+            for(int i = 0; i < 9;i++)
+            {
+                var tag = _listImg[i].Tag as Tuple<int, int, int>;
+
+                if (tag.Item3 == i)
+                {
+                    CheckWin_game++;
+                }
+                else
+                {
+                    CheckWin_game = 0;
+                    break;
+                }
+            }
+            if (CheckWin_game == 9)
+                return true;
+            else
+                return false;
         }
     }
 }
