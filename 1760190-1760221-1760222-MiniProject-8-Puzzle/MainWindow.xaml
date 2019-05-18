@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         KeyDown="Board_KeyDown"
         Icon="/Img/jigsaw_Gfe_icon.ico"
-        Title="8 Puzzle" Height="511.519" Width="800" WindowStartupLocation="CenterScreen">
+        Title="8 Puzzle" Height="511.519" Width="1000" WindowStartupLocation="CenterScreen">
 
     <DockPanel Background="#CFD8DC" LastChildFill="True">
         <ToolBarTray DockPanel.Dock="Top">
@@ -15,7 +15,7 @@
                 <Button Name="newButton" Click="NewButton_Click" >
                     <StackPanel Orientation="Horizontal">
                         <Image Source="/Img/add.png" Width="25" Height="25" Margin="0 0 5 0" />
-                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text=" New" FontSize="15"/>
+                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="New game" FontSize="15"/>
                     </StackPanel>
                 </Button>
             </ToolBar>
@@ -25,16 +25,15 @@
                 <Button Name="saveButton" Click="SaveButton_Click" >
                     <StackPanel Orientation="Horizontal">
                         <Image Source="/Img/floppy-disk.png" Width="25" Height="25" Margin="0 0 5 0"/>
-                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text=" Save" FontSize="15"/>
+                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="Save game" FontSize="15"/>
                     </StackPanel>
                 </Button>
             </ToolBar>
-
             <ToolBar>
-                <Button Name="helpButton" >
+                <Button Name="ImportButto" Click="ImportButto_Click" >
                     <StackPanel Orientation="Horizontal">
-                        <Image Source="/Img/question.png" Width="25" Height="25" Margin="0 0 5 0" />
-                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text=" Help" FontSize="15"/>
+                        <Image Source="/Img/archive.png" Width="25" Height="25" Margin="0 0 5 0" />
+                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="Import file" FontSize="15"/>
                     </StackPanel>
                 </Button>
             </ToolBar>
@@ -43,6 +42,7 @@
         <Grid Name="boar">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="400"/>
             </Grid.ColumnDefinitions>
             <Canvas Name="Choi" 
@@ -51,35 +51,37 @@
                     MouseLeftButtonDown="Window_MouseLeftButtonDown"
                     MouseLeftButtonUp="Window_MouseLeftButtonUp"
                     MouseMove="Window_MouseMove">
+            </Canvas>
+            <Canvas Name="Control" Grid.Column="1">
+                <Button Name="topButton" Height="40" Width="40" Canvas.Left="76" Canvas.Top="267" Click="TopButton_Click"  Background="Transparent" BorderThickness="0">
+                    <Image Source="/Img/up-arrow.png" Width="auto" Height="auto" RenderTransformOrigin="3.82,3.38"/>
+                </Button>
 
-                <Button Name="topButton" Height="40" Width="40" Canvas.Left="295" Canvas.Top="315" Click="TopButton_Click"  Background="Transparent" BorderThickness="0">
-                    <Image Source="/Img/top.png" Width="20" Height="20" RenderTransformOrigin="3.82,3.38"/>
+                <Button Name="buttomButton" Height="40" Width="40" Canvas.Left="76" Canvas.Top="383" Click="ButtomButton_Click" Background="Transparent" BorderThickness="0">
+                    <Image Source="/Img/down-arrow.png" Width="auto" Height="auto" RenderTransformOrigin="3.82,3.38"/>
 
                 </Button>
 
-                <Button Name="buttomButton" Height="40" Width="40" Canvas.Left="295" Canvas.Top="395" Click="ButtomButton_Click" Background="Transparent" BorderThickness="0">
-                    <Image Source="/Img/buttom.png" Width="20" Height="20" RenderTransformOrigin="3.82,3.38"/>
+                <Button Name="leftButton" Height="40" Width="40" Canvas.Top="326" Click="LeftButton_Click"  Background="Transparent" BorderThickness="0" Canvas.Left="10">
+                    <Image Source="/Img/left-arrow.png" Width="auto" Height="auto"/>
 
                 </Button>
 
-                <Button Name="leftButton" Height="40" Width="40" Canvas.Left="255" Canvas.Top="355" Click="LeftButton_Click"  Background="Transparent" BorderThickness="0">
-                    <Image Source="/Img/left.png" Width="20" Height="20" RenderTransformOrigin="3.82,3.38"/>
+                <Button Name="rightButton" Height="40" Width="40" Canvas.Left="141" Canvas.Top="326" Click="RightButton_Click"  Background="Transparent" BorderThickness="0">
+                    <Image Source="/Img/right-arrow.png" Width="auto" Height="auto"/>
 
                 </Button>
 
-                <Button Name="rightButton" Height="40" Width="40" Canvas.Left="335" Canvas.Top="355" Click="RightButton_Click"  Background="Transparent" BorderThickness="0">
-                    <Image Source="/Img/right.png" Width="20" Height="20" RenderTransformOrigin="3.82,3.38"/>
-
+                <Button Name="CenterButton" Width="40" Height="40" Canvas.Left="76" Canvas.Top="326" Background="Transparent" BorderThickness="0">
+                    <Image Source="/Img/puzzle.png"></Image>
                 </Button>
 
+                <TextBox Foreground="#FF4FBA6F" Name="Timer" Width="180" Height="35" Canvas.Top="172" Background="Transparent" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" FontSize="30" BorderThickness="0" Canvas.Left="10"/>
             </Canvas>
             <StackPanel Name="Show"
                         Grid.Column="2" 
                         HorizontalAlignment="Center" 
                         VerticalAlignment="Center">
-                <Canvas>
-                    <TextBlock Name="tbTime"  FontSize="40" Canvas.Left="144" Canvas.Top="278"/>
-                </Canvas>
             </StackPanel>
         </Grid>
     </DockPanel>

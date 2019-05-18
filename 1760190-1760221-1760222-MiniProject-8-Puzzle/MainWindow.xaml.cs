@@ -31,12 +31,10 @@ namespace _1760190_1760221_1760222_MiniProject_8_Puzzle
         }
         string filename = "";
         List<Image> images = new List<Image>();
-       
-        List<int> list_2chieu = new List<int>();
-        int docao = 0;
         Image[,] _images = new Image[3, 3];
         int commonindex = 8;
 
+        // list Image contain random image
         List<Image> _listImg = new List<Image>(9);
 
         // create steps
@@ -48,10 +46,12 @@ namespace _1760190_1760221_1760222_MiniProject_8_Puzzle
         // create continue game
         bool IsContinueGame = true;
 
+        // create time 
+        DispatcherTimer _timer;
+        TimeSpan _time;
+
         private void NewButton_Click(object sender, RoutedEventArgs e)
         {
-            DispatcherTimer _timer;
-            TimeSpan _time;
             var screen = new OpenFileDialog();
             if (screen.ShowDialog() == true)
             {
@@ -65,7 +65,6 @@ namespace _1760190_1760221_1760222_MiniProject_8_Puzzle
 
                 int width = originalImage.PixelWidth / 3;
                 int height = originalImage.PixelHeight / 3;
-
 
                 var newHeight = 100 * height / width;
                 for (int i = 0; i < 3; i++)
@@ -99,16 +98,12 @@ namespace _1760190_1760221_1760222_MiniProject_8_Puzzle
                             int index = rng.Next(indices.Count);
                             var img = images[indices[index]];
 
-
                             Choi.Children.Add(img);
                             
-
                             Canvas.SetLeft(img, i * (100 + 5)+30);
                             Canvas.SetTop(img, j * (newHeight + 5)+30);
 
                             _listImg.Add(img);
-
-                            docao = newHeight;
 
                             indices.RemoveAt(index);
                         }
@@ -122,20 +117,28 @@ namespace _1760190_1760221_1760222_MiniProject_8_Puzzle
                         }
                     }
                 }
-            }
-            _time = TimeSpan.FromSeconds(180);
+                _time = TimeSpan.FromSeconds(180);
 
-            _timer = new DispatcherTimer(new TimeSpan(0, 0, 1), DispatcherPriority.Normal, delegate
-            {
-                tbTime.Text = _time.ToString("c");
-                if (_time == TimeSpan.Zero)
+                _timer = new DispatcherTimer(new TimeSpan(0, 0, 1), DispatcherPriority.Normal, delegate
                 {
-                    //_timer.Stop();
-                }
-                _time = _time.Add(TimeSpan.FromSeconds(-1));
-            }, Application.Current.Dispatcher);
+                    
+                    Timer.Text = _time.ToString("c");
+                    if (_time == TimeSpan.Zero)
+                    {
+                        _timer.Stop();
+                        if (CheckWin())
+                        {
+                            MessageBox.Show("You Win!");
+                        }
+                        else
+                            MessageBox.Show("You Lose!");
+                        IsContinueGame = false;
+                    }
+                    _time = _time.Add(TimeSpan.FromSeconds(-1));
+                }, Application.Current.Dispatcher);
 
-            _timer.Start();
+                _timer.Start();
+            }
         }
 
 
@@ -276,15 +279,22 @@ namespace _1760190_1760221_1760222_MiniProject_8_Puzzle
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            var writer = new StreamWriter("Save.txt");
+            var writer = new StreamWriter("save.dat");
             writer.WriteLine(filename);
-            
-            for (int i = 0; i < list_2chieu.Count; i++)
+
+            writer.WriteLine(commonindex);
+
+            writer.WriteLine(_time);
+
+            for (int i = 0; i < _listImg.Count; i++)
             {
-                writer.WriteLine(list_2chieu[i]);
+                var tag = _listImg[i].Tag as Tuple<int, int, int>;
+                writer.WriteLine(tag.Item3);
             }
+
             writer.Close();
-            MessageBox.Show("Da Luu Thanh Cong");
+
+            MessageBox.Show("Game saved");
         }
 
         private void TopButton_Click(object sender, RoutedEventArgs e)
@@ -397,6 +407,105 @@ namespace _1760190_1760221_1760222_MiniProject_8_Puzzle
                 return true;
             else
                 return false;
+        }
+
+        private void ImportButto_Click(object sender, RoutedEventArgs e)
+        {
+            var reader = new StreamReader("save.dat");
+            _listImg.Clear();
+            Show.Children.Clear();
+            Choi.Children.Clear();
+            images.Clear();
+
+            var Save_filename = reader.ReadLine();
+
+            var originalImage = new BitmapImage(new Uri(Save_filename));
+            var image = new Image()
+            {
+                Source = originalImage
+            };
+            Show.Children.Add(image);
+
+            int width = originalImage.PixelWidth / 3;
+            int height = originalImage.PixelHeight / 3;
+
+            var newHeight = 100 * height / width;
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    var cropped = new CroppedBitmap(originalImage,
+                        new Int32Rect(i * width, j * height, width, height));
+
+                    var img = new Image()
+                    {
+                        Source = cropped,
+                        Width = 100,
+                        Height = newHeight,
+                        Tag = new Tuple<int, int, int>(i, j, i * 3 + j)
+                    };
+
+                    images.Add(img);
+                }
+            }
+
+            commonindex = int.Parse(reader.ReadLine());
+
+            _time = TimeSpan.Parse(reader.ReadLine());
+
+            _timer = new DispatcherTimer(new TimeSpan(0, 0, 1), DispatcherPriority.Normal, delegate
+            {
+
+                Timer.Text = _time.ToString("c");
+                if (_time == TimeSpan.Zero)
+                {
+                    _timer.Stop();
+                }
+                _time = _time.Add(TimeSpan.FromSeconds(-1));
+            }, Application.Current.Dispatcher);
+
+            _timer.Start();
+
+            List<int> temp_tuple_item3 = new List<int>();
+
+            while(!reader.EndOfStream)
+            {
+                string ReadAllLine = reader.ReadLine();
+                temp_tuple_item3.Add(int.Parse(ReadAllLine));
+            }
+            reader.Close();
+
+            for (int i = 0; i < temp_tuple_item3.Count; i++)
+            {
+                for (int j = 0; j < images.Count; j++)
+                {
+                    var tag = images[j].Tag as Tuple<int, int, int>;
+                    if (tag.Item3 == temp_tuple_item3[i])
+                    {
+                        _listImg.Add(images[j]);
+                    }
+                }
+            }
+
+            int index_img = 0;
+
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    var tag = _listImg[index_img].Tag as Tuple<int, int, int>;
+
+                    if (tag.Item3 != commonindex)
+                    {
+                        Choi.Children.Add(_listImg[index_img]);
+                    }
+
+                    Canvas.SetLeft(_listImg[index_img], i * (100 + 5) + 30);
+                    Canvas.SetTop(_listImg[index_img], j * (newHeight + 5) + 30);
+
+                    index_img++;
+                }
+            }
         }
     }
 }
