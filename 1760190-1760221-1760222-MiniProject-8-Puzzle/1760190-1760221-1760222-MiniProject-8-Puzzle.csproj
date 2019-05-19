@@ -103,20 +103,14 @@
     <Resource Include="Img\jigsaw_Gfe_icon.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Img\buttom.png" />
-    <Resource Include="Img\left.png" />
-    <Resource Include="Img\right.png" />
-    <Resource Include="Img\top.png" />
     <Resource Include="Img\add.png" />
     <Resource Include="Img\floppy-disk.png" />
-    <Resource Include="Img\question.png" />
     <Resource Include="Img\down-arrow.png" />
     <Resource Include="Img\left-arrow.png" />
     <Resource Include="Img\puzzle.png" />
     <Resource Include="Img\right-arrow.png" />
     <Resource Include="Img\up-arrow.png" />
     <Resource Include="Img\archive.png" />
-    <Content Include="Save.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

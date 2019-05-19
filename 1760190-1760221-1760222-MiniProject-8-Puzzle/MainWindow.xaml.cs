@@ -52,6 +52,13 @@ namespace _1760190_1760221_1760222_MiniProject_8_Puzzle
 
         private void NewButton_Click(object sender, RoutedEventArgs e)
         {
+            _listImg.Clear();
+            Show.Children.Clear();
+            Choi.Children.Clear();
+            images.Clear();
+
+            commonindex = 8;
+
             var screen = new OpenFileDialog();
             if (screen.ShowDialog() == true)
             {
@@ -411,13 +418,28 @@ namespace _1760190_1760221_1760222_MiniProject_8_Puzzle
 
         private void ImportButto_Click(object sender, RoutedEventArgs e)
         {
-            var reader = new StreamReader("save.dat");
             _listImg.Clear();
             Show.Children.Clear();
             Choi.Children.Clear();
             images.Clear();
 
+            // create storaging variable
+            List<int> temp_tuple_item3 = new List<int>();
+
+            var reader = new StreamReader("save.dat");
+
             var Save_filename = reader.ReadLine();
+
+            commonindex = int.Parse(reader.ReadLine());
+
+            _time = TimeSpan.Parse(reader.ReadLine());
+
+            while (!reader.EndOfStream)
+            {
+                string ReadAllLine = reader.ReadLine();
+                temp_tuple_item3.Add(int.Parse(ReadAllLine));
+            }
+            reader.Close();
 
             var originalImage = new BitmapImage(new Uri(Save_filename));
             var image = new Image()
@@ -449,37 +471,12 @@ namespace _1760190_1760221_1760222_MiniProject_8_Puzzle
                 }
             }
 
-            commonindex = int.Parse(reader.ReadLine());
-
-            _time = TimeSpan.Parse(reader.ReadLine());
-
-            _timer = new DispatcherTimer(new TimeSpan(0, 0, 1), DispatcherPriority.Normal, delegate
-            {
-
-                Timer.Text = _time.ToString("c");
-                if (_time == TimeSpan.Zero)
-                {
-                    _timer.Stop();
-                }
-                _time = _time.Add(TimeSpan.FromSeconds(-1));
-            }, Application.Current.Dispatcher);
-
-            _timer.Start();
-
-            List<int> temp_tuple_item3 = new List<int>();
-
-            while(!reader.EndOfStream)
-            {
-                string ReadAllLine = reader.ReadLine();
-                temp_tuple_item3.Add(int.Parse(ReadAllLine));
-            }
-            reader.Close();
-
             for (int i = 0; i < temp_tuple_item3.Count; i++)
             {
                 for (int j = 0; j < images.Count; j++)
                 {
                     var tag = images[j].Tag as Tuple<int, int, int>;
+
                     if (tag.Item3 == temp_tuple_item3[i])
                     {
                         _listImg.Add(images[j]);
@@ -494,8 +491,9 @@ namespace _1760190_1760221_1760222_MiniProject_8_Puzzle
                 for (int j = 0; j < 3; j++)
                 {
                     var tag = _listImg[index_img].Tag as Tuple<int, int, int>;
+                    var tag2 = _listImg[commonindex].Tag as Tuple<int, int, int>;
 
-                    if (tag.Item3 != commonindex)
+                    if (tag.Item3 != tag2.Item3)
                     {
                         Choi.Children.Add(_listImg[index_img]);
                     }
@@ -506,6 +504,19 @@ namespace _1760190_1760221_1760222_MiniProject_8_Puzzle
                     index_img++;
                 }
             }
+
+            _timer = new DispatcherTimer(new TimeSpan(0, 0, 1), DispatcherPriority.Normal, delegate
+            {
+
+                Timer.Text = _time.ToString("c");
+                if (_time == TimeSpan.Zero)
+                {
+                    _timer.Stop();
+                }
+                _time = _time.Add(TimeSpan.FromSeconds(-1));
+            }, Application.Current.Dispatcher);
+
+            _timer.Start();
         }
     }
 }

@@ -46,11 +46,9 @@
                 <ColumnDefinition Width="400"/>
             </Grid.ColumnDefinitions>
             <Canvas Name="Choi" 
-                    Grid.Column="0"
-                    Grid.ColumnSpan="3"
                     MouseLeftButtonDown="Window_MouseLeftButtonDown"
                     MouseLeftButtonUp="Window_MouseLeftButtonUp"
-                    MouseMove="Window_MouseMove">
+                    MouseMove="Window_MouseMove" Background="WhiteSmoke">
             </Canvas>
             <Canvas Name="Control" Grid.Column="1">
                 <Button Name="topButton" Height="40" Width="40" Canvas.Left="76" Canvas.Top="267" Click="TopButton_Click"  Background="Transparent" BorderThickness="0">
